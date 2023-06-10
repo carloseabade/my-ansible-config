@@ -1,0 +1,62 @@
+---
+- name: My Arch Linux playbook
+  hosts: '{{ group }}'
+
+  tasks:
+  - name: Install packages from repo
+    become: true
+    community.general.pacman:
+      package: ['base','linux','linux-firmware','iputils','dhcpcd','dhcp','vim','git','man-db','man-pages','texinfo','openssh','curl','rclone','transmission-cli','feh','gimp','darktable','inkscape','maim','alsa-utils','mpv','jq','pass','pass-otp','zbar','xclip','xorg-server','xorg-xinit','base-devel','grub','efibootmgr','xorg-xev','xbindkeys','xcompmgr','ansible','ansible-core','aws-cli-v2','bash-completion','blueman','dictd','discord','docker','dunst','firefox','mupdf','neofetch','os-prober','recordmydesktop','unclutter','unzip','python','python-pip','python-setuptools']
+      state: present
+
+  - name: Install pexpect
+    pip:
+      name: pexpect
+
+  - name: Create temp directory for installing AUR packages
+    ansible.builtin.tempfile:
+      state: directory
+      path: /home/carlos
+    register: aurDir
+
+  - name: Clone AUR packages
+    ansible.builtin.shell:
+    args:
+      chdir: '{{ aurDir.path }}'
+      cmd: 'git clone --single-branch --depth 1 {{ item.pkgRepo }} {{ item.pkgName}}'
+    loop:
+      - { pkgName: 'android-studio', pkgRepo: 'https://aur.archlinux.org/android-studio.git' }
+      - { pkgName: 'anki', pkgRepo: 'https://aur.archlinux.org/anki.git' }
+      - { pkgName: 'droidcam', pkgRepo: 'https://aur.archlinux.org/droidcam.git' }
+      - { pkgName: 'unityhub', pkgRepo: 'https://aur.archlinux.org/unityhub.git' }
+    when: aurDir.path is defined
+
+  - name: Create/Install AUR packages
+    ansible.builtin.expect:
+    args:
+      chdir: '{{ aurDir.path }}/{{ item.pkgName }}'
+      command: 'makepkg -i -s --noconfirm --needed --asdeps'
+      responses:
+        password: '{{ rootPassword }}'
+    loop:
+      #- { pkgName: 'android-studio', pkgRepo: 'https://aur.archlinux.org/android-studio.git' }
+      - { pkgName: 'anki', pkgRepo: 'https://aur.archlinux.org/anki.git' }
+      - { pkgName: 'droidcam', pkgRepo: 'https://aur.archlinux.org/droidcam.git' }
+      - { pkgName: 'unityhub', pkgRepo: 'https://aur.archlinux.org/unityhub.git' }
+    when: aurDir.path is defined
+    when: rootPassword is defined
+
+  #- name: Install packages from AUR
+    #ansible.builtin.expect:
+    #args:
+      #chdir: '{{ aurDir.path }}'
+      #command: git clone {{ item.pkgRepo }} && cd {{ item.pkgName }} && makepkg -i -s --noconfirm --needed --asdeps
+      #responses:
+        #(?i)password: '{{ rootPassword }}'
+    #loop:
+      #- { pkgName: 'android-studio', pkgRepo: 'https://aur.archlinux.org/android-studio.git' }
+      #- { pkgName: 'anki', pkgRepo: 'https://aur.archlinux.org/anki.git' }
+      #- { pkgName: 'droidcam', pkgRepo: 'https://aur.archlinux.org/droidcam.git' }
+      #- { pkgName: 'unityhub', pkgRepo: 'https://aur.archlinux.org/unityhub.git' }
+    #when: aurDir.path is defined
+    #when: rootPassword is defined
