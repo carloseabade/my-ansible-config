@@ -1,62 +1,76 @@
 ---
 - name: My Arch Linux playbook
   hosts: '{{ group }}'
+  vars_prompt:
+    - name: ansible_become_password
+      prompt: 'Enter the root password'
 
   tasks:
   - name: Install packages from repo
     become: true
     community.general.pacman:
-      package: ['base','linux','linux-firmware','iputils','dhcpcd','dhcp','vim','git','man-db','man-pages','texinfo','openssh','curl','rclone','transmission-cli','feh','gimp','darktable','inkscape','maim','alsa-utils','mpv','jq','pass','pass-otp','zbar','xclip','xorg-server','xorg-xinit','base-devel','grub','efibootmgr','xorg-xev','xbindkeys','xcompmgr','ansible','ansible-core','aws-cli-v2','bash-completion','blueman','dictd','discord','docker','dunst','firefox','mupdf','neofetch','os-prober','recordmydesktop','unclutter','unzip','python','python-pip','python-setuptools']
+      package: ['base','linux','linux-firmware','iputils','dhcpcd','dhcp','vim','git','man-db','man-pages','texinfo','openssh','curl','rclone','transmission-cli','feh','gimp','darktable','inkscape','maim','alsa-utils','mpv','jq','pass','pass-otp','zbar','xclip','xorg-server','xorg-xinit','base-devel','grub','efibootmgr','xorg-xev','xbindkeys','xcompmgr','ansible','ansible-core','aws-cli-v2','bash-completion','blueman','dictd','discord','docker','dunst','firefox','mupdf','neofetch','os-prober','recordmydesktop','unclutter','unzip','python','python-pip','python-setuptools', 'go', 'kubectl']
       state: present
 
-  - name: Install pexpect
-    pip:
-      name: pexpect
+  #- name: Create temp directory for installing AUR packages
+    #ansible.builtin.file:
+      #path: /tmp/aurDir
+      #state: directory
+    #register: aurDir
 
-  - name: Create temp directory for installing AUR packages
-    ansible.builtin.tempfile:
-      state: directory
-      path: /home/carlos
-    register: aurDir
-
-  - name: Clone AUR packages
-    ansible.builtin.shell:
-    args:
-      chdir: '{{ aurDir.path }}'
-      cmd: 'git clone --single-branch --depth 1 {{ item.pkgRepo }} {{ item.pkgName}}'
-    loop:
-      - { pkgName: 'android-studio', pkgRepo: 'https://aur.archlinux.org/android-studio.git' }
-      - { pkgName: 'anki', pkgRepo: 'https://aur.archlinux.org/anki.git' }
-      - { pkgName: 'droidcam', pkgRepo: 'https://aur.archlinux.org/droidcam.git' }
-      - { pkgName: 'unityhub', pkgRepo: 'https://aur.archlinux.org/unityhub.git' }
-    when: aurDir.path is defined
-
-  - name: Create/Install AUR packages
-    ansible.builtin.expect:
-    args:
-      chdir: '{{ aurDir.path }}/{{ item.pkgName }}'
-      command: 'makepkg -i -s --noconfirm --needed --asdeps'
-      responses:
-        password: '{{ rootPassword }}'
-    loop:
-      #- { pkgName: 'android-studio', pkgRepo: 'https://aur.archlinux.org/android-studio.git' }
-      - { pkgName: 'anki', pkgRepo: 'https://aur.archlinux.org/anki.git' }
-      - { pkgName: 'droidcam', pkgRepo: 'https://aur.archlinux.org/droidcam.git' }
-      - { pkgName: 'unityhub', pkgRepo: 'https://aur.archlinux.org/unityhub.git' }
-    when: aurDir.path is defined
-    when: rootPassword is defined
-
-  #- name: Install packages from AUR
-    #ansible.builtin.expect:
+  #- name: Check is yay is installed
+    #ansible.builtin.shell:
     #args:
-      #chdir: '{{ aurDir.path }}'
-      #command: git clone {{ item.pkgRepo }} && cd {{ item.pkgName }} && makepkg -i -s --noconfirm --needed --asdeps
-      #responses:
-        #(?i)password: '{{ rootPassword }}'
-    #loop:
-      #- { pkgName: 'android-studio', pkgRepo: 'https://aur.archlinux.org/android-studio.git' }
-      #- { pkgName: 'anki', pkgRepo: 'https://aur.archlinux.org/anki.git' }
-      #- { pkgName: 'droidcam', pkgRepo: 'https://aur.archlinux.org/droidcam.git' }
-      #- { pkgName: 'unityhub', pkgRepo: 'https://aur.archlinux.org/unityhub.git' }
-    #when: aurDir.path is defined
-    #when: rootPassword is defined
+      #cmd: 'pacman -Qe yay'
+    #register: isYayInstalled
+    #ignore_errors: true
+
+  #- block:
+    #- name: Clone yay package from AUR
+      #ansible.builtin.shell:
+      #args:
+        #chdir: '{{ aurDir.path }}'
+        #cmd: 'rm -rf yay && git clone --single-branch --depth 1 https://aur.archlinux.org/yay.git yay'
+      #when: aurDir.path is defined
+
+    #- name: Create yay package
+      #ansible.builtin.shell:
+      #args:
+        #chdir: '{{ aurDir.path }}/yay'
+        #cmd: 'makepkg'
+      #when: aurDir.path is defined
+
+    #- name: Get yay pkgname
+      #ansible.builtin.shell:
+      #args:
+        #chdir: '{{ aurDir.path }}/yay'
+        #cmd: 'echo $(sed -E -n -e "0,/^pkgname/ s/^pkgname=(.*)/\1/p" PKGBUILD)-$(sed -E -n -e "0,/^pkgver/ s/^pkgver=(.*)/\1/p" PKGBUILD)-$(sed -E -n -e "0,/^pkgrel/ s/^pkgrel=(.*)/\1/p" PKGBUILD)-x86_64.pkg.tar.zst'
+      #register: pkgname
+      #when: aurDir.path is defined
+
+    #- name: Install yay package
+      #become: true
+      #community.general.pacman:
+        #package: '{{ aurDir.path }}/yay/{{ pkgname.stdout }}'
+        #state: present
+      #when: aurDir.path is defined
+      #when: pkgname is defined
+    #when: isYayInstalled.rc != 0
+
+  #- name: Install packages from AUR using yay
+    #community.general.pacman:
+      #name: anki
+      #- 'android-studio'
+      #- 'anki'
+      #- 'droidcam'
+      #- 'unityhub'
+      #state: present
+      #executable: yay
+      #extra_args: '--builddir {{ aurDir.path }}'
+    #when: aurDir is defined
+
+  #- name: Delete temp directory for installing AUR packages
+    #ansible.builtin.file:
+    #args:
+      #path: /tmp/aurDir
+      #state: absent
