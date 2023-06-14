@@ -1,0 +1,15 @@
+---
+- name: 'Clone config repo'
+  ansible.builtin.git:
+    repo: 'https://github.com/carloseabade/config'
+    dest: '/home/carlos/repos/config'
+    depth: 1
+    single_branch: true
+  async: 300
+  poll: 3
+  retries: 3
+
+- name: 'Copy files to home'
+  ansible.builtin.shell:
+    cmd: 'cp -r /home/carlos/repos/config/home/.[a-zA-Z]* /home/carlos'
+

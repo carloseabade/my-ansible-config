@@ -1,0 +1,15 @@
+---
+- name: 'Clone suckless utilities repos'
+  ansible.builtin.git:
+    repo: '{{ item.value }}'
+    dest: '/home/carlos/repos/{{ item.key }}'
+    depth: 1
+    single_branch: true
+  loop: '{{ sucklessUtilities | dict2items }}'
+
+- name: 'Install suckless utilities'
+  become: true
+  ansible.builtin.shell:
+    chdir: '/home/carlos/repos/{{ item.key }}'
+    cmd: 'make clean install'
+  loop: '{{ sucklessUtilities | dict2items }}'

@@ -1,0 +1,9 @@
+---
+sucklessUtilities:
+  dwm: 'https://github.com/carloseabade/dwm.git'
+  st: 'https://github.com/carloseabade/st.git'
+  dmenu: 'https://git.suckless.org/dmenu'
+  fardbeld: 'https://git.suckless.org/farbfeld'
+  sent: 'https://github.com/carloseabade/sent.git'
+  slock: 'https://github.com/carloseabade/slock.git'
+  slstatus: 'https://github.com/carloseabade/slstatus.git'
