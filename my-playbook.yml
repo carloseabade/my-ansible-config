@@ -1,14 +1,11 @@
 ---
 - name: My Arch Linux playbook
-  hosts: '{{ group }}'
+  hosts: '{{ group | default("laptop") }}'
   vars_prompt:
     - name: ansible_become_password
       prompt: 'Enter the root password'
 
-  tasks:
-  - name: Install packages from repo
-    become: true
-    community.general.pacman:
-      package: ['base','linux','linux-firmware','iputils','dhcpcd','dhcp','vim','git','man-db','man-pages','texinfo','openssh','curl','rclone','transmission-cli','feh','gimp','darktable','inkscape','maim','alsa-utils','mpv','jq','pass','pass-otp','zbar','xclip','xorg-server','xorg-xinit','base-devel','grub','efibootmgr','xorg-xev','xbindkeys','xcompmgr','ansible','ansible-core','aws-cli-v2','bash-completion','blueman','dictd','discord','docker','dunst','firefox','mupdf','neofetch','os-prober','recordmydesktop','unclutter','unzip','python','python-pip','python-setuptools', 'go', 'kubectl']
-      state: present
-
+  roles:
+  - packages
+  - suckless
+  - config
