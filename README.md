@@ -19,11 +19,11 @@ git clone https://github.com/carloseabade/my-ansible-config
 Run your playbook:
 
 ```bash
-ansible-playbook my-playbook.yml -i HOST_IP, -e ansible_ssh_private_key_file=PATH_TO_PRIVATE_KEY
+ansible-playbook playbook.yml -i HOST_IP, -e ansible_ssh_private_key_file=PATH_TO_PRIVATE_KEY
 ```
 
 > You can run on localhost by not passing -i and -e:
-> ansible-playbook my-playbook.yml -i localhost,
+> ansible-playbook playbook.yml -i localhost,
 
 <!-- Repository -->
 
