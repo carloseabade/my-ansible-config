@@ -1,0 +1,21 @@
+---
+- name: Try to install golang
+  block:
+    - name: Check if golang is installed
+      ansible.builtin.file:
+        path: /usr/local/go/bin/go
+        state: file
+  rescue:
+    - name: Download golang .deb file
+      ansible.builtin.uri:
+        url: 'https://go.dev/dl/go1.23.3.linux-amd64.tar.gz'
+        dest: '/tmp/golang.tar.gz'
+        mode: '644'
+        status_code:
+          - 200
+          - 304
+      register: golang
+    - name: Install golang from .deb file
+      become: true
+      ansible.builtin.command:
+        cmd: 'tar -C /usr/local -xzf {{ golang.path }}'
