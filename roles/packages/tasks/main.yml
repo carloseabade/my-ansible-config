@@ -1,6 +1,39 @@
 ---
-- name: Install packages from repo
+- name: Install packages from official repository
   become: true
-  community.general.pacman:
-    package: ['base','linux','linux-firmware','iputils','dhcpcd','dhcp','vim','git','man-db','man-pages','texinfo','openssh','curl','rclone','transmission-cli','feh','gimp','darktable','inkscape','maim','alsa-utils','mpv','jq','pass','pass-otp','zbar','xclip','xorg-server','xorg-xinit','base-devel','grub','efibootmgr','xorg-xev','xbindkeys','xcompmgr','ansible','ansible-core','aws-cli-v2','bash-completion','blueman','dictd','discord','docker','dunst','firefox','mupdf','neofetch','os-prober','recordmydesktop','unclutter','unzip','python','python-pip','python-setuptools', 'go', 'kubectl']
-    state: present
+  ansible.builtin.apt:
+    package:
+      - ansible
+      - ansible-core
+      - aws-cli-v2
+      - curl
+      - darktable
+      - dictd
+      - discord
+      - docker
+      - dunst
+      - feh
+      - firefox
+      - gimp
+      - git
+      - go
+      - inkscape
+      - jq
+      - kubect
+      - maim
+      - mpv
+      - neofetch
+      - openssh
+      - pass
+      - pass-otp
+      - python
+      - python-pip
+      - rclone
+      - transmission-cli
+      - unclutter
+      - unzip
+      - nvim
+      - xbindkeys
+      - xclip
+      - zathura
+      - zbar
