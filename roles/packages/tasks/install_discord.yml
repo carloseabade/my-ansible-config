@@ -1,0 +1,22 @@
+---
+- name: Try to install discord
+  block:
+    - name: Check if discord is installed
+      ansible.builtin.file:
+        path: /usr/bin/discord
+        state: file
+  rescue:
+    - name: Download discord .deb file
+      ansible.builtin.uri:
+        url: 'https://discord.com/api/download?platform=linux&format=deb'
+        dest: '/tmp/discord.deb'
+        force: true
+        mode: '644'
+        status_code:
+          - 200
+          - 304
+      register: discord
+    - name: Install discord from .deb file
+      become: true
+      ansible.builtin.apt:
+        deb: '{{ discord.path }}'

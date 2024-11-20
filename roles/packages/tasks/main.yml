@@ -2,3 +2,7 @@
 - name: Install packages from official repository
   ansible.builtin.include_tasks:
     file: install_apt_packages.yml
+
+- name: Install discord
+  ansible.builtin.include_tasks:
+    file: install_discord.yml
