@@ -1,0 +1,36 @@
+---
+- name: Install packages using apt
+  become: true
+  ansible.builtin.apt:
+    package:
+      - ansible
+      - ansible-core
+      - awscli
+      - curl
+      - darktable
+      - dictd
+      - docker
+      - dunst
+      - feh
+      - firefox-esr
+      - gimp
+      - git
+      - inkscape
+      - jq
+      - maim
+      - mpv
+      - neofetch
+      - openssh-server
+      - pass
+      - pass-otp
+      - python3
+      - python3-pip
+      - rclone
+      - transmission-cli
+      - unclutter
+      - unzip
+      - neovim
+      - xbindkeys
+      - xclip
+      - zathura
+      - zbar-tools
