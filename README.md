@@ -10,7 +10,7 @@ A quick way of **seting up a new computer** with the **same packages and configu
 
 ## Quick start
 
-> Prerequisites: you need to be able to connect to the host machine using ssh. Check [prerequisites](#prerequisites) for more info.
+> Prerequisites: you need to be able to connect to the target machine using ssh. Check [prerequisites](#prerequisites) for more info.
 
 Clone the repo to your controller machine:
 
@@ -24,8 +24,7 @@ Run your playbook against your target machine:
 ansible-playbook playbook.yml -i HOST_IP, -e ansible_ssh_private_key_file=PATH_TO_PRIVATE_KEY
 ```
 
-> You can run on localhost by not passing `-e` and using `localhost` on `-i`:
-> ansible-playbook playbook.yml -i localhost,
+You can run on localhost by not passing `-e` and using `localhost,` on `-i`: `ansible-playbook playbook.yml -i localhost,`
 
 ## Prerequisites
 
@@ -63,4 +62,4 @@ ssh USER@HOST
 
 <!-- External -->
 
-[ssh_academy]: https://www.ssh.com/academy/ssh-keys
+[ssh_academy]: https://www.ssh.com/academy/ssh

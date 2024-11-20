@@ -5,35 +5,35 @@
     package:
       - ansible
       - ansible-core
-      - aws-cli-v2
+      - awscli
       - curl
       - darktable
       - dictd
-      - discord
+      #- discord #should install via .deb pacakge
       - docker
       - dunst
       - feh
-      - firefox
+      - firefox-esr
       - gimp
       - git
-      - go
+      #- go #should install using go script
       - inkscape
       - jq
-      - kubect
+      #- kubectl
       - maim
       - mpv
       - neofetch
-      - openssh
+      - openssh-server
       - pass
       - pass-otp
-      - python
-      - python-pip
+      - python3
+      - python3-pip
       - rclone
       - transmission-cli
       - unclutter
       - unzip
-      - nvim
+      - neovim
       - xbindkeys
       - xclip
       - zathura
-      - zbar
+      - zbar-tools
