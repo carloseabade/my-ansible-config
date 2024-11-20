@@ -10,3 +10,7 @@
 - name: Install golang
   ansible.builtin.include_tasks:
     file: install_golang.yml
+
+- name: Install kubectl
+  ansible.builtin.include_tasks:
+    file: install_kubectl.yml

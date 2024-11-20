@@ -1,0 +1,21 @@
+---
+- name: Try to install kubectl
+  block:
+    - name: Check if kubectl is installed
+      ansible.builtin.file:
+        path: /usr/local/bin/kubectl
+        state: file
+  rescue:
+    - name: Download kubectl .deb file
+      ansible.builtin.uri:
+        url: 'https://dl.k8s.io/release/v1.31.2/bin/linux/amd64/kubectl'
+        dest: '/tmp/kubectl'
+        mode: '755'
+        status_code:
+          - 200
+          - 304
+      register: kubectl
+    - name: Install kubectl from .deb file
+      become: true
+      ansible.builtin.command:
+        cmd: 'install {{ kubectl.path }} /usr/local/bin/kubectl'
