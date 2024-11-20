@@ -1,0 +1,15 @@
+---
+- name: My setup playbook
+  hosts: all
+  vars_prompt:
+    - name: ansible_become_password
+      prompt: 'Enter the root password'
+  tasks:
+    - name: Find on home
+      find:
+        paths: /home/carlos
+
+  roles:
+  #- packages
+  #- suckless
+  #- config
